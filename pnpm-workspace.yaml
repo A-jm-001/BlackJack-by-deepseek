@@ -1,6 +1,5 @@
 # pnpm 11 reads project settings from this file, not .npmrc.
-# The DSH Windows sandbox cannot follow pnpm's virtual-store junctions into
-# nested ESM dependencies, so use a flat linker for this standalone project.
+# Keep dependency resolution predictable and the pnpm store inside the project.
 packages:
   - .
 nodeLinker: hoisted

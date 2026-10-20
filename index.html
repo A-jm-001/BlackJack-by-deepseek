@@ -138,11 +138,12 @@
         <p class="boot-screen__eyebrow">BLACKJACK 21</p>
         <h1 class="boot-screen__title">正在发牌…</h1>
         <p class="boot-screen__copy">
-          如果页面一直停在这里，请回到项目文件夹，双击 <strong>start.cmd</strong> 启动本地服务。
+          如果页面一直停在这里，请在项目目录运行 <strong>pnpm dev</strong>（Windows 也可双击
+          <strong>start.cmd</strong>）启动本地服务。
         </p>
         <div class="boot-screen__steps">
-          <span>1. 回到 blackjack 文件夹</span>
-          <span>2. 双击 start.cmd</span>
+          <span>1. 在项目目录执行 pnpm install</span>
+          <span>2. 执行 pnpm dev，或双击 start.cmd</span>
           <span>3. 浏览器会自动打开游戏</span>
         </div>
         <a class="boot-screen__action" href="http://127.0.0.1:5173/">
@@ -155,16 +156,16 @@
       // A Vite page cannot run from a file:// URL. Turn the loading screen into
       // a clear setup instruction instead of leaving a blank white page.
       if (window.location.protocol === 'file:') {
-        document.title = '请通过 start.cmd 启动 · BLACKJACK 21';
+        document.title = '请启动本地开发服务器 · BLACKJACK 21';
         var boot = document.getElementById('boot-screen');
         if (boot) {
           boot.classList.add('is-file');
           var heading = boot.querySelector('.boot-screen__title');
           var copy = boot.querySelector('.boot-screen__copy');
-          if (heading) heading.textContent = '请通过 start.cmd 启动游戏';
+          if (heading) heading.textContent = '请启动本地开发服务器';
           if (copy) {
             copy.textContent =
-              '直接双击 index.html 不会运行 Vite 应用。请回到 blackjack 文件夹，双击 start.cmd；浏览器会自动打开。';
+              '直接双击 index.html 不会运行 Vite 应用。请在项目目录运行 pnpm dev；Windows 用户也可以双击 start.cmd，浏览器会自动打开。';
           }
         }
       }

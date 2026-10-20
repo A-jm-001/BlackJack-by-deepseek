@@ -2,6 +2,7 @@ node_modules/
 dist/
 .artifacts/
 .pnpm-store/
+start.local.cmd
 *.local
 .DS_Store
 Thumbs.db

@@ -2,21 +2,26 @@
 setlocal
 cd /d "%~dp0"
 
-set "BUNDLED_NODE_DIR=%USERPROFILE%\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\node\bin"
-set "BUNDLED_NODE=%BUNDLED_NODE_DIR%\node.exe"
-set "BUNDLED_PNPM=%USERPROFILE%\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\pnpm\bin\pnpm.mjs"
+rem Optional machine-local runtime configuration. Ignored by Git.
+if exist "start.local.cmd" call "start.local.cmd"
 
-if exist "%BUNDLED_NODE%" (
-  set "NODE_EXE=%BUNDLED_NODE%"
-  set "PNPM_JS=%BUNDLED_PNPM%"
-  set "PATH=%BUNDLED_NODE_DIR%;%PATH%"
-) else (
-  set "NODE_EXE=node"
-  set "PNPM_JS="
+set "PNPM_MODE=path"
+if defined BLACKJACK_PNPM_JS (
+  set "PNPM_MODE=js"
+  if not defined BLACKJACK_NODE set "BLACKJACK_NODE=node"
 )
 
-rem If a BLACKJACK server is already running, just open it instead of
-rem starting a second dev server on an incremented port.
+if "%PNPM_MODE%"=="js" (
+  if not exist "%BLACKJACK_PNPM_JS%" goto :missing_runtime
+) else (
+  where node >nul 2>nul
+  if errorlevel 1 goto :missing_runtime
+  where pnpm >nul 2>nul
+  if errorlevel 1 goto :missing_runtime
+)
+
+rem If the game is already running, just open it instead of starting a second
+rem dev server on an incremented port.
 powershell.exe -NoProfile -Command "try { $res = Invoke-WebRequest -UseBasicParsing -Uri 'http://127.0.0.1:5173/' -TimeoutSec 2; if ($res.StatusCode -eq 200 -and $res.Content -match 'BLACKJACK 21') { exit 0 } } catch {}; exit 1"
 if not errorlevel 1 (
   echo.
@@ -28,8 +33,8 @@ if not errorlevel 1 (
 
 if not exist "node_modules\vite\bin\vite.js" (
   echo Installing dependencies...
-  if defined PNPM_JS (
-    "%NODE_EXE%" "%PNPM_JS%" install
+  if "%PNPM_MODE%"=="js" (
+    "%BLACKJACK_NODE%" "%BLACKJACK_PNPM_JS%" install
   ) else (
     call pnpm install
   )
@@ -43,15 +48,26 @@ echo If it does not, open http://127.0.0.1:5173/ manually.
 echo Press Ctrl+C to stop the server.
 echo.
 
-if defined PNPM_JS (
-  "%NODE_EXE%" "%PNPM_JS%" dev
+if "%PNPM_MODE%"=="js" (
+  "%BLACKJACK_NODE%" "%BLACKJACK_PNPM_JS%" dev
 ) else (
   call pnpm dev
 )
 goto :eof
 
+:missing_runtime
+echo.
+echo Node.js and pnpm are required to run this project.
+echo Install Node.js 22+ from https://nodejs.org/
+echo Install pnpm from https://pnpm.io/installation
+echo.
+pause
+exit /b 1
+
 :fail
 echo.
-echo Could not install dependencies. Check Node.js/pnpm and try again.
+echo Could not install dependencies or start the game.
+echo Check that Node.js and pnpm are installed correctly, then try again.
+echo.
 pause
 exit /b 1
