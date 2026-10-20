@@ -90,7 +90,7 @@ pnpm build
 
 项目在 `blackjack/` 内初始化了 Git 仓库（分支 `main`）。`node_modules`、`dist`、`.artifacts` 和 `.pnpm-store` 均已被忽略。
 
-> Windows 默认会给 `.git` 文件夹加上隐藏属性。在文件资源管理器中打开「查看 → 显示 → 隐藏的项目」即可看到；也可以用 `git status`、`git log` 验证仓库状态。
+> 本仓库已将 `core.hideDotFiles` 设为 `false`，并移除了 `.git` 的 Windows 隐藏属性，因此可以直接在文件资源管理器中看到 `.git`。仍建议不要手动编辑或删除其中的内容。
 
 ## 本地数据
 
