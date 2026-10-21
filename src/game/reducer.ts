@@ -161,6 +161,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case 'RESET_STATS':
       return {
         ...state,
+        roundId: 0,
         stats: resetStats(),
       };
   }

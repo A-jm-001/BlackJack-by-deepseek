@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { ActionPanel } from './components/ActionPanel';
+import { ActionBar } from './components/ActionBar';
 import { GameTable } from './components/GameTable';
+import { GuidePanel } from './components/GuidePanel';
 import { RulesDialog } from './components/RulesDialog';
 import { StatsPanel } from './components/StatsPanel';
 import { TopBar } from './components/TopBar';
@@ -30,7 +31,7 @@ export default function App() {
         return;
       }
 
-      if (rulesOpen) {
+      if (rulesOpen || document.querySelector('dialog[open]')) {
         return;
       }
 
@@ -104,16 +105,19 @@ export default function App() {
           onReset={resetStats}
         />
 
-        <GameTable state={state} playerValue={playerValue} dealerValue={dealerValue} />
+        <div className="play-column">
+          <GameTable state={state} playerValue={playerValue} dealerValue={dealerValue} />
 
-        <ActionPanel
-          phase={state.phase}
-          outcome={state.outcome}
-          canStart={canStart}
-          onStart={startRound}
-          onHit={hit}
-          onStand={stand}
-        />
+          <ActionBar
+            phase={state.phase}
+            canStart={canStart}
+            onStart={startRound}
+            onHit={hit}
+            onStand={stand}
+          />
+        </div>
+
+        <GuidePanel phase={state.phase} outcome={state.outcome} />
       </main>
 
       <footer className="page-footer">

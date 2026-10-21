@@ -6,10 +6,11 @@
   position: relative;
   isolation: isolate;
   display: flex;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
   flex-direction: column;
-  overflow-x: clip;
+  overflow: hidden;
   background: var(--bg-abyss);
 }
 
@@ -99,11 +100,12 @@
   z-index: 5;
   display: flex;
   width: min(1480px, calc(100% - 48px));
+  flex: 0 0 auto;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
   margin: 0 auto;
-  padding: 22px 0 16px;
+  padding: clamp(11px, 2.2vh, 22px) 0 clamp(8px, 1.5vh, 16px);
 }
 
 .brand {
@@ -116,8 +118,8 @@
 .brand__seal {
   position: relative;
   display: grid;
-  width: 54px;
-  height: 62px;
+  width: clamp(46px, 5.8vh, 54px);
+  height: clamp(52px, 6.6vh, 62px);
   flex: 0 0 auto;
   place-items: center;
   border: 2px solid #11160f;
@@ -178,7 +180,7 @@
 .brand__title {
   color: var(--cream-bright);
   font-family: var(--font-display);
-  font-size: clamp(30px, 3.45vw, 48px);
+  font-size: clamp(28px, min(3.45vw, 4.6vh), 48px);
   font-weight: 400;
   letter-spacing: 0.005em;
   line-height: 0.88;
@@ -324,12 +326,21 @@
   z-index: 2;
   display: grid;
   width: min(1480px, calc(100% - 48px));
-  flex: 1;
-  grid-template-columns: minmax(190px, 230px) minmax(0, 1fr) minmax(230px, 260px);
+  flex: 1 1 auto;
+  min-height: 0;
+  grid-template-columns: minmax(190px, 230px) minmax(0, 1fr) minmax(190px, 230px);
   gap: 16px;
   align-items: stretch;
   margin: 0 auto;
-  padding-bottom: 14px;
+  padding-bottom: clamp(4px, 1.2vh, 14px);
+}
+
+.play-column {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  gap: clamp(7px, 1.2vh, 12px);
 }
 
 .side-panel {
@@ -402,8 +413,8 @@
 /* -------------------------------------------------------------------------- */
 
 .stats-panel {
-  gap: 13px;
-  padding: 20px;
+  gap: clamp(9px, 1.5vh, 13px);
+  padding: clamp(15px, 2.3vh, 20px);
 }
 
 .stats-panel__round {
@@ -603,21 +614,126 @@
   color: var(--gold-bright);
 }
 
-.text-button.is-confirming {
-  color: var(--red-bright);
-}
-
 .text-button:disabled {
   opacity: 0.3;
+}
+
+/* Clear-ledger confirmation ------------------------------------------------ */
+
+body:has(.confirm-dialog[open]) {
+  overflow: hidden;
+}
+
+.confirm-dialog {
+  width: min(430px, calc(100vw - 28px));
+  max-width: none;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 17px;
+  background: transparent;
+  color: var(--ink);
+}
+
+.confirm-dialog::backdrop {
+  background: rgba(1, 8, 5, 0.76);
+  backdrop-filter: blur(7px);
+}
+
+.confirm-dialog[open] {
+  animation: dialog-in 190ms ease-out both;
+}
+
+.confirm-dialog__body {
+  padding: 24px 26px 22px;
+  border: 3px solid #171a14;
+  border-radius: 17px;
+  background:
+    radial-gradient(circle at 88% 0%, rgba(255, 255, 255, 0.68), transparent 32%),
+    repeating-linear-gradient(
+      94deg,
+      transparent 0 8px,
+      rgba(96, 72, 38, 0.025) 8px 9px
+    ),
+    linear-gradient(155deg, #f8eed8, #e4d0a9);
+  box-shadow:
+    0 0 0 4px rgba(213, 168, 90, 0.72),
+    0 22px 70px rgba(0, 0, 0, 0.58);
+}
+
+.confirm-dialog__body .panel-eyebrow {
+  color: #8d672d;
+}
+
+.confirm-dialog h2 {
+  margin-top: 4px;
+  color: #1a1e16;
+  font-size: clamp(23px, 2.4vw, 29px);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+
+.confirm-dialog p {
+  margin-top: 11px;
+  color: #574a36;
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+.confirm-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 20px;
+}
+
+.confirm-dialog__cancel,
+.confirm-dialog__danger {
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 800;
+  transition:
+    translate 120ms ease,
+    filter 120ms ease;
+}
+
+.confirm-dialog__cancel {
+  border: 2px solid rgba(23, 26, 20, 0.55);
+  background: rgba(255, 250, 238, 0.5);
+  color: #2a2d23;
+  box-shadow: 0 3px 0 rgba(88, 63, 31, 0.2);
+}
+
+.confirm-dialog__danger {
+  border: 2px solid #4a1211;
+  background: linear-gradient(150deg, #c44b3f, #922d2b 72%, #6b1f20);
+  color: var(--cream-bright);
+  box-shadow: 0 3px 0 #4a1211;
+}
+
+@media (hover: hover) {
+  .confirm-dialog__cancel:hover,
+  .confirm-dialog__danger:hover {
+    translate: 0 -2px;
+    filter: brightness(1.05);
+  }
+}
+
+.confirm-dialog__cancel:active,
+.confirm-dialog__danger:active {
+  translate: 0 1px;
 }
 
 /* -------------------------------------------------------------------------- */
 /* Actions                                                                    */
 /* -------------------------------------------------------------------------- */
 
-.action-panel {
-  gap: 13px;
-  padding: 20px;
+.guide-panel {
+  gap: clamp(10px, 1.5vh, 13px);
+  padding: clamp(16px, 2.3vh, 20px);
 }
 
 .turn-light {
@@ -660,18 +776,131 @@
   animation: turn-pulse 1s ease-in-out infinite;
 }
 
-.action-panel__hint {
-  min-height: 49px;
-  color: rgba(239, 225, 194, 0.6);
+.guide-panel__hint {
+  min-height: 58px;
+  color: rgba(239, 225, 194, 0.64);
   font-size: 11px;
   letter-spacing: 0.02em;
   line-height: 1.7;
 }
 
-.action-panel__buttons {
+.guide-panel__policy {
+  padding: 12px 12px 11px;
+  border: 1px solid rgba(213, 168, 90, 0.2);
+  border-radius: 10px;
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.045), transparent 60%),
+    rgba(1, 12, 9, 0.26);
+}
+
+.guide-panel__policy-title {
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-size: 6px;
+  letter-spacing: 0.18em;
+}
+
+.guide-panel__policy-row {
   display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.guide-panel__policy-row > div {
+  display: flex;
+  min-width: 0;
+  flex: 1;
   flex-direction: column;
-  gap: 10px;
+  gap: 2px;
+}
+
+.guide-panel__policy-row strong {
+  color: var(--cream-bright);
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.guide-panel__policy-row small {
+  color: rgba(239, 225, 194, 0.5);
+  font-size: 8px;
+  line-height: 1.3;
+}
+
+.guide-panel__policy-row i {
+  color: rgba(213, 168, 90, 0.34);
+  font-family: var(--font-card);
+  font-size: 18px;
+  font-style: normal;
+}
+
+.guide-panel__policy p {
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px dashed rgba(239, 225, 194, 0.12);
+  color: rgba(239, 225, 194, 0.42);
+  font-size: 8px;
+  line-height: 1.55;
+}
+
+/* Centred primary controls ------------------------------------------------- */
+
+.action-dock {
+  position: relative;
+  width: min(100%, 560px);
+  flex: 0 0 auto;
+  margin: 0 auto;
+  padding: clamp(6px, 0.9vh, 9px);
+  border: 1px solid rgba(213, 168, 90, 0.32);
+  border-radius: 16px;
+  background:
+    radial-gradient(ellipse at 50% -40%, rgba(77, 128, 99, 0.22), transparent 60%),
+    linear-gradient(160deg, rgba(14, 43, 33, 0.96), rgba(5, 20, 15, 0.98));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 12px 28px rgba(0, 0, 0, 0.3);
+}
+
+.action-dock::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(213, 168, 90, 0.08);
+  border-radius: 11px;
+  pointer-events: none;
+}
+
+.action-dock.is-active {
+  border-color: rgba(236, 198, 120, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 12px 30px rgba(0, 0, 0, 0.34),
+    0 0 24px rgba(213, 168, 90, 0.08);
+}
+
+.action-dock__buttons {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 8px;
+}
+
+.action-dock__buttons > .game-button {
+  flex: 1;
+}
+
+.action-dock .game-button {
+  min-height: clamp(50px, 6.8vh, 66px);
+}
+
+.action-dock .game-button--primary {
+  min-height: clamp(52px, 7vh, 72px);
+}
+
+.action-dock .game-button__copy strong {
+  font-size: clamp(16px, 1.35vw, 20px);
 }
 
 .game-button {
@@ -773,19 +1002,23 @@
 .game-button--hit {
   background:
     radial-gradient(circle at 80% 15%, rgba(255, 255, 255, 0.13), transparent 34%),
-    linear-gradient(150deg, #c44b3f, #922d2b 72%, #6b1f20);
+    linear-gradient(150deg, #2f7768, #1b5148 72%, #103d35);
   box-shadow:
-    0 4px 0 #3e1211,
+    0 4px 0 #08251e,
     0 12px 20px rgba(0, 0, 0, 0.25);
 }
 
 .game-button--stand {
   background:
-    radial-gradient(circle at 80% 15%, rgba(255, 255, 255, 0.13), transparent 34%),
-    linear-gradient(150deg, #2f7768, #1b5148 72%, #103d35);
+    radial-gradient(circle at 80% 15%, rgba(255, 255, 255, 0.16), transparent 34%),
+    linear-gradient(150deg, #cf5346, #a32f2c 72%, #781f20);
   box-shadow:
-    0 4px 0 #08251e,
-    0 12px 20px rgba(0, 0, 0, 0.25);
+    0 4px 0 #4a1211,
+    0 12px 22px rgba(0, 0, 0, 0.28);
+}
+
+.game-button--stand::after {
+  border-color: rgba(255, 232, 214, 0.22);
 }
 
 .game-button--stand .game-button__glyph {
@@ -838,7 +1071,7 @@
   animation-delay: 240ms;
 }
 
-.action-panel__shortcuts {
+.guide-panel__shortcuts {
   display: flex;
   flex-wrap: wrap;
   gap: 5px 10px;
@@ -849,13 +1082,13 @@
   font-size: 9px;
 }
 
-.action-panel__shortcuts span {
+.guide-panel__shortcuts span {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.action-panel__shortcuts kbd {
+.guide-panel__shortcuts kbd {
   min-width: 17px;
   min-height: 17px;
   padding: 1px 4px;
@@ -866,20 +1099,20 @@
   font-size: 7px;
 }
 
-.action-panel__rule {
+.guide-panel__foot {
   margin-top: auto;
   padding-top: 11px;
   border-top: 1px dashed rgba(239, 225, 194, 0.12);
 }
 
-.action-panel__rule span {
+.guide-panel__foot span {
   color: var(--gold);
   font-family: var(--font-display);
   font-size: 6px;
   letter-spacing: 0.18em;
 }
 
-.action-panel__rule p {
+.guide-panel__foot p {
   margin-top: 6px;
   color: rgba(239, 225, 194, 0.42);
   font-size: 9px;
@@ -910,17 +1143,18 @@
 /* -------------------------------------------------------------------------- */
 
 .game-table {
-  --card-w: clamp(66px, 7.5vw, 104px);
+  --card-w: clamp(58px, min(7.4vw, 9.6vh), 104px);
   position: relative;
   z-index: 1;
   display: flex;
   min-width: 0;
-  min-height: 664px;
+  min-height: 0;
+  flex: 1 1 auto;
   flex-direction: column;
   justify-content: space-between;
   gap: 2px;
   overflow: hidden;
-  padding: 48px clamp(18px, 3.2vw, 52px) 23px;
+  padding: clamp(38px, 5.2vh, 48px) clamp(18px, 3.2vw, 52px) clamp(13px, 2.2vh, 23px);
   border: 1px solid #52442f;
   border-radius: 28px;
   background:
@@ -1260,8 +1494,8 @@
   position: relative;
   z-index: 2;
   display: flex;
-  flex: 1;
-  min-height: 168px;
+  flex: 1 1 auto;
+  min-height: clamp(110px, 17vh, 168px);
   align-items: center;
   justify-content: center;
   padding: 8px 0 6px;
@@ -1635,11 +1869,12 @@
   display: flex;
   width: min(1480px, calc(100% - 48px));
   flex-wrap: wrap;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   gap: 9px;
   margin: 0 auto;
-  padding: 4px 0 18px;
+  padding: 2px 0 clamp(6px, 1.4vh, 18px);
   color: rgba(239, 225, 194, 0.27);
   font-family: var(--font-display);
   font-size: 5px;
@@ -1969,7 +2204,7 @@ body:has(.rules-dialog[open]) {
 
 @media (max-width: 1220px) {
   .game-shell {
-    grid-template-columns: minmax(180px, 200px) minmax(0, 1fr) minmax(215px, 235px);
+    grid-template-columns: minmax(180px, 200px) minmax(0, 1fr) minmax(180px, 200px);
     gap: 12px;
     width: min(1480px, calc(100% - 32px));
   }
@@ -1980,14 +2215,14 @@ body:has(.rules-dialog[open]) {
   }
 
   .game-table {
-    --card-w: clamp(64px, 7.2vw, 94px);
-    min-height: 640px;
+    --card-w: clamp(56px, min(7.2vw, 9.4vh), 94px);
+    min-height: 0;
     padding-right: 24px;
     padding-left: 24px;
   }
 
   .stats-panel,
-  .action-panel {
+  .guide-panel {
     padding: 17px 15px;
   }
 
@@ -1995,20 +2230,21 @@ body:has(.rules-dialog[open]) {
     width: min(100%, 580px);
   }
 
-  .action-panel__hint {
+  .guide-panel__hint {
     font-size: 10px;
   }
 }
 
 @media (max-width: 1000px) {
   .app {
-    padding-bottom: 94px;
+    padding-bottom: clamp(82px, 11vh, 98px);
   }
 
   .game-shell {
     width: min(760px, calc(100% - 24px));
     grid-template-columns: minmax(0, 1fr);
-    gap: 10px;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 8px;
     padding-bottom: 0;
   }
 
@@ -2018,22 +2254,30 @@ body:has(.rules-dialog[open]) {
   }
 
   .topbar {
-    padding-top: 17px;
-    padding-bottom: 12px;
-  }
-
-  .game-table {
-    --card-w: clamp(66px, 12vw, 98px);
-    min-height: 610px;
-    order: 2;
+    padding-top: clamp(8px, 1.6vh, 15px);
+    padding-bottom: clamp(6px, 1.2vh, 11px);
   }
 
   .stats-panel {
     display: grid;
     order: 1;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 8px 12px;
-    padding: 14px 16px;
+    gap: 7px 12px;
+    padding: clamp(10px, 1.7vh, 14px) 16px;
+  }
+
+  .play-column {
+    order: 2;
+    gap: 0;
+  }
+
+  .guide-panel {
+    display: none;
+  }
+
+  .game-table {
+    --card-w: clamp(58px, min(12vw, 9.8vh), 98px);
+    min-height: 0;
   }
 
   .stats-panel .side-panel__head {
@@ -2082,52 +2326,40 @@ body:has(.rules-dialog[open]) {
   .stats-panel__footer {
     grid-column: 1 / -1;
     margin-top: 0;
-    padding-top: 7px;
+    padding-top: 6px;
   }
 
-  .action-panel {
+  .action-dock {
     position: fixed;
-    right: 50%;
     bottom: max(10px, env(safe-area-inset-bottom));
-    left: auto;
+    left: 50%;
     z-index: 50;
     width: min(620px, calc(100% - 20px));
     margin: 0;
-    padding: 10px;
-    border-color: rgba(213, 168, 90, 0.4);
+    padding: 8px;
+    border-color: rgba(213, 168, 90, 0.44);
     border-radius: 14px;
     background: rgba(5, 21, 15, 0.94);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.07),
       0 12px 36px rgba(0, 0, 0, 0.52),
       0 0 0 3px rgba(3, 12, 8, 0.45);
-    transform: translateX(50%);
+    transform: translateX(-50%);
     backdrop-filter: blur(15px);
   }
 
-  .action-panel::before {
+  .action-dock::before {
     inset: 4px;
     border-radius: 10px;
   }
 
-  .action-panel > .side-panel__head,
-  .action-panel__hint,
-  .action-panel__shortcuts,
-  .action-panel__rule {
-    display: none;
-  }
-
-  .action-panel__buttons {
-    flex-direction: row;
+  .action-dock__buttons {
     gap: 8px;
   }
 
-  .action-panel__buttons > .game-button {
-    flex: 1;
-  }
-
-  .game-button {
-    min-height: 54px;
+  .action-dock .game-button,
+  .action-dock .game-button--primary {
+    min-height: clamp(48px, 7.2vh, 56px);
     padding: 9px 11px;
     border-radius: 9px;
   }
@@ -2154,16 +2386,8 @@ body:has(.rules-dialog[open]) {
     font-size: 13px;
   }
 
-  .game-button--primary {
-    min-height: 54px;
-  }
-
-  .game-button--pending {
-    flex: 1;
-  }
-
   .page-footer {
-    padding-bottom: 12px;
+    padding-bottom: 8px;
   }
 
   .rules-grid {
@@ -2173,13 +2397,13 @@ body:has(.rules-dialog[open]) {
 
 @media (max-width: 700px) {
   .app {
-    padding-bottom: 88px;
+    padding-bottom: clamp(76px, 12vh, 92px);
   }
 
   .topbar {
     gap: 10px;
-    padding-top: 13px;
-    padding-bottom: 10px;
+    padding-top: clamp(7px, 1.5vh, 13px);
+    padding-bottom: clamp(5px, 1.1vh, 10px);
   }
 
   .brand {
@@ -2304,10 +2528,10 @@ body:has(.rules-dialog[open]) {
   }
 
   .game-table {
-    --card-w: clamp(66px, 17.8vw, 84px);
-    min-height: 545px;
+    --card-w: clamp(58px, min(17.8vw, 9.4vh), 84px);
+    min-height: 0;
     gap: 0;
-    padding: 40px 10px 15px;
+    padding: clamp(32px, 4.6vh, 40px) 10px clamp(9px, 1.5vh, 15px);
     border-radius: 20px;
   }
 
@@ -2403,7 +2627,7 @@ body:has(.rules-dialog[open]) {
   }
 
   .table-center {
-    min-height: 128px;
+    min-height: clamp(96px, 15vh, 128px);
     padding: 5px 0;
   }
 
@@ -2485,11 +2709,15 @@ body:has(.rules-dialog[open]) {
     font-size: 9px;
   }
 
-  .action-panel {
+  .action-dock {
     width: calc(100% - 16px);
     bottom: max(8px, env(safe-area-inset-bottom));
     padding: 8px;
     border-radius: 12px;
+  }
+
+  .action-dock__buttons {
+    gap: 7px;
   }
 
   .game-button {
@@ -2603,8 +2831,8 @@ body:has(.rules-dialog[open]) {
   }
 
   .game-table {
-    --card-w: 64px;
-    min-height: 515px;
+    --card-w: clamp(54px, min(16.5vw, 9vh), 70px);
+    min-height: 0;
   }
 
   .hand__name {
@@ -2621,12 +2849,11 @@ body:has(.rules-dialog[open]) {
   }
 }
 
-/* Short tablets and landscape phones keep the whole table above the fixed
-   action bar instead of letting the bar cover the player's hand. */
+/* Short tablets keep the whole table above the fixed action bar. */
 @media (max-width: 1000px) and (max-height: 820px) {
   .topbar {
-    padding-top: 10px;
-    padding-bottom: 8px;
+    padding-top: 8px;
+    padding-bottom: 7px;
   }
 
   .brand {
@@ -2654,12 +2881,12 @@ body:has(.rules-dialog[open]) {
   }
 
   .game-shell {
-    gap: 8px;
+    gap: 6px;
   }
 
   .stats-panel {
     gap: 5px 10px;
-    padding: 9px 12px;
+    padding: 8px 12px;
   }
 
   .stats-panel .side-panel__head {
@@ -2697,9 +2924,9 @@ body:has(.rules-dialog[open]) {
   }
 
   .game-table {
-    --card-w: clamp(62px, 11.5vw, 82px);
-    min-height: 475px;
-    padding: 35px 12px 11px;
+    --card-w: clamp(54px, min(16vw, 8.8vh), 82px);
+    min-height: 0;
+    padding: 33px 12px 10px;
   }
 
   .hand__meta {
@@ -2724,7 +2951,7 @@ body:has(.rules-dialog[open]) {
   }
 
   .table-center {
-    min-height: 104px;
+    min-height: clamp(84px, 13.5vh, 104px);
     padding: 4px 0;
   }
 
@@ -2769,21 +2996,201 @@ body:has(.rules-dialog[open]) {
     display: none;
   }
 
-  .action-panel {
+  .action-dock {
     padding: 7px;
   }
 
-  .game-button {
+  .action-dock .game-button,
+  .action-dock .game-button--primary {
     min-height: 48px;
     padding: 7px 10px;
   }
 
-  .game-button--primary {
-    min-height: 48px;
-  }
-
   .page-footer {
     display: none;
+  }
+}
+
+/* Very short screens: trade the ledger for a full, usable table. */
+@media (max-width: 1000px) and (max-height: 640px) {
+  .app {
+    padding-bottom: 62px;
+  }
+
+  .stats-panel {
+    display: none;
+  }
+
+  .topbar {
+    padding-top: 6px;
+    padding-bottom: 5px;
+  }
+
+  .brand__seal {
+    width: 34px;
+    height: 40px;
+    font-size: 13px;
+  }
+
+  .brand__eyebrow,
+  .brand__sub {
+    display: none;
+  }
+
+  .brand__title {
+    font-size: clamp(23px, 5vw, 30px);
+  }
+
+  .game-table {
+    --card-w: clamp(42px, min(13vw, 7.6vh), 62px);
+    padding: 27px 10px 8px;
+  }
+
+  .table-center {
+    min-height: 76px;
+  }
+
+  .hand__meta {
+    margin-bottom: 2px;
+  }
+
+  .hand__overline {
+    display: none;
+  }
+
+  .hand__name {
+    font-size: 14px;
+  }
+
+  .hand__total {
+    min-width: 46px;
+    padding: 3px 6px;
+  }
+
+  .hand__total-value {
+    font-size: 18px;
+  }
+
+  .action-dock {
+    bottom: max(6px, env(safe-area-inset-bottom));
+    width: calc(100% - 12px);
+    padding: 5px;
+  }
+
+  .action-dock .game-button,
+  .action-dock .game-button--primary {
+    min-height: 42px;
+    padding: 5px 10px;
+  }
+
+  .game-button__glyph {
+    width: 24px;
+    height: 24px;
+  }
+
+  .game-button__copy small {
+    display: none;
+  }
+}
+
+/* Landscape phones are wider but much shorter; shrink the table furniture
+   further so the player's hand stays above the fixed action bar. */
+@media (min-width: 600px) and (max-width: 1000px) and (max-height: 500px) {
+  .game-table {
+    --card-w: clamp(34px, min(9vw, 6.4vh), 52px);
+    padding: 20px 10px 5px;
+  }
+
+  .table-center {
+    min-height: 56px;
+    padding: 2px 0;
+  }
+
+  .hand__meta {
+    margin-bottom: 1px;
+  }
+
+  .hand__name {
+    font-size: 12px;
+  }
+
+  .hand__total {
+    min-width: 40px;
+    padding: 2px 5px;
+  }
+
+  .hand__total-value {
+    font-size: 16px;
+  }
+
+  .ready-seal::before {
+    top: 8px;
+    width: 80px;
+  }
+
+  .ready-seal__eyebrow {
+    font-size: 5px;
+  }
+
+  .ready-seal__number {
+    font-size: 42px;
+  }
+
+  .ready-seal__sub {
+    font-size: 8px;
+  }
+
+  .ready-seal__rule {
+    display: none;
+  }
+
+  .table-status__zh {
+    font-size: 17px;
+  }
+
+  .table-status__detail {
+    font-size: 7px;
+  }
+
+  .result-stamp {
+    width: min(100%, 280px);
+    padding: 6px 10px;
+  }
+
+  .result-stamp__title {
+    font-size: 20px;
+  }
+
+  .result-stamp__subtitle {
+    font-size: 8px;
+  }
+
+  .result-stamp__score {
+    display: none;
+  }
+
+  .game-table__rail {
+    top: 8px;
+    font-size: 4px;
+  }
+
+  .table-round {
+    font-size: 4px;
+  }
+
+  .table-corner {
+    display: none;
+  }
+
+  .action-dock {
+    bottom: max(4px, env(safe-area-inset-bottom));
+    padding: 4px;
+  }
+
+  .action-dock .game-button,
+  .action-dock .game-button--primary {
+    min-height: 40px;
+    padding: 4px 10px;
   }
 }
 

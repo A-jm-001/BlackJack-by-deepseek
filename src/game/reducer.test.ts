@@ -159,15 +159,17 @@ describe('game reducer', () => {
     expect(next).toBe(playing);
   });
 
-  it('resets stats without touching the table', () => {
+  it('resets stats and the hand counter together', () => {
     const state: GameState = {
       ...createInitialState({ wins: 5, losses: 2, pushes: 1, streak: 0, bestStreak: 5 }),
       phase: 'round-over',
+      roundId: 8,
       outcome: 'player-win',
     };
     const reset = gameReducer(state, { type: 'RESET_STATS' });
 
     expect(reset.stats).toEqual(EMPTY_STATS);
+    expect(reset.roundId).toBe(0);
     expect(reset.phase).toBe('round-over');
   });
 });
