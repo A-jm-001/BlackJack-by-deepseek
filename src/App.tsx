@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ActionBar } from './components/ActionBar';
 import { GameTable } from './components/GameTable';
-import { GuidePanel } from './components/GuidePanel';
 import { RulesDialog } from './components/RulesDialog';
 import { StatsPanel } from './components/StatsPanel';
 import { TopBar } from './components/TopBar';
@@ -116,8 +115,6 @@ export default function App() {
             onStand={stand}
           />
         </div>
-
-        <GuidePanel phase={state.phase} outcome={state.outcome} />
       </main>
 
       <footer className="page-footer">

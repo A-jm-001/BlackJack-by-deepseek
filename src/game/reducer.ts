@@ -14,10 +14,10 @@ export type GameAction =
   | { type: 'FINISH_ROUND' }
   | { type: 'RESET_STATS' };
 
-export function createInitialState(stats: Stats): GameState {
+export function createInitialState(stats: Stats, roundId = 0): GameState {
   return {
     phase: 'ready',
-    roundId: 0,
+    roundId,
     deck: [],
     playerCards: [],
     dealerCards: [],

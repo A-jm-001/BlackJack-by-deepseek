@@ -48,6 +48,9 @@ echo If it does not, open http://127.0.0.1:5173/ manually.
 echo Press Ctrl+C to stop the server.
 echo.
 
+rem Wait until Vite is actually serving, then open exactly one browser tab.
+start "" /b powershell.exe -NoProfile -WindowStyle Hidden -Command "for ($i = 0; $i -lt 120; $i++) { try { $r = Invoke-WebRequest -UseBasicParsing -Uri 'http://127.0.0.1:5173/' -TimeoutSec 1; if ($r.StatusCode -eq 200 -and $r.Content -match 'BLACKJACK 21') { Start-Process 'http://127.0.0.1:5173/'; break } } catch {}; Start-Sleep -Milliseconds 250 }"
+
 if "%PNPM_MODE%"=="js" (
   "%BLACKJACK_NODE%" "%BLACKJACK_PNPM_JS%" dev
 ) else (

@@ -5,7 +5,7 @@ import { getHandValue } from '../game/hand';
 import { createInitialState, gameReducer } from '../game/reducer';
 import type { Outcome, Settings } from '../game/types';
 import { useSound, type SoundName } from '../hooks/useSound';
-import { loadSettings, loadStats, saveSettings, saveStats } from './storage';
+import { loadRoundId, loadSettings, loadStats, saveRoundId, saveSettings, saveStats } from './storage';
 
 export const DEALING_DURATION_MS = 1_050;
 export const DEALER_STEP_DURATION_MS = 680;
@@ -31,7 +31,10 @@ export function useBlackjackGame() {
   const [state, dispatch] = useReducer(
     gameReducer,
     undefined,
-    () => createInitialState(loadStats()),
+    () => {
+      const stats = loadStats();
+      return createInitialState(stats, loadRoundId(stats));
+    },
   );
   const [settings, setSettings] = useState<Settings>(loadSettings);
   const { play } = useSound(settings.muted);
@@ -40,6 +43,10 @@ export function useBlackjackGame() {
   useEffect(() => {
     saveStats(state.stats);
   }, [state.stats]);
+
+  useEffect(() => {
+    saveRoundId(state.roundId);
+  }, [state.roundId]);
 
   useEffect(() => {
     saveSettings(settings);

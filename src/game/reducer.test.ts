@@ -16,6 +16,12 @@ function start(deck: Card[]): GameState {
 }
 
 describe('game reducer', () => {
+  it('restores a persisted round number', () => {
+    const state = createInitialState({ ...EMPTY_STATS }, 10);
+    expect(state.roundId).toBe(10);
+    expect(state.phase).toBe('ready');
+  });
+
   it('deals alternately to the player and dealer', () => {
     const deck = [
       card('A', 'spades'),

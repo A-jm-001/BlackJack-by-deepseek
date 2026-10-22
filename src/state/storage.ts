@@ -2,6 +2,7 @@ import { DEFAULT_SETTINGS, EMPTY_STATS, type Settings, type Stats } from '../gam
 
 const STATS_KEY = 'blackjack.stats.v1';
 const SETTINGS_KEY = 'blackjack.settings.v1';
+const ROUND_KEY = 'blackjack.round.v1';
 
 function nonNegativeInteger(value: unknown, fallback = 0): number {
   return typeof value === 'number' && Number.isInteger(value) && value >= 0
@@ -43,6 +44,28 @@ export function saveStats(stats: Stats): void {
     window.localStorage.setItem(STATS_KEY, JSON.stringify(stats));
   } catch {
     // Private modes and restricted storage must never block a hand.
+  }
+}
+
+export function loadRoundId(stats: Stats): number {
+  const completed = stats.wins + stats.losses + stats.pushes;
+  try {
+    const raw = window.localStorage.getItem(ROUND_KEY);
+    if (raw !== null) {
+      return Math.max(nonNegativeInteger(Number(raw), completed), completed);
+    }
+  } catch {
+    // Fall through to the completed-round count.
+  }
+
+  return completed;
+}
+
+export function saveRoundId(roundId: number): void {
+  try {
+    window.localStorage.setItem(ROUND_KEY, String(nonNegativeInteger(roundId)));
+  } catch {
+    // Round persistence is a convenience; never block play.
   }
 }
 

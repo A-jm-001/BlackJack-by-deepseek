@@ -15,6 +15,7 @@ export function StatsPanel({ stats, roundId, phase, onReset }: StatsPanelProps) 
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
   const resetButtonRef = useRef<HTMLButtonElement>(null);
   const rounds = totalRounds(stats);
+  const displayedRounds = Math.max(rounds, roundId);
   const hasRecord = rounds > 0 || stats.bestStreak > 0;
   const handInProgress =
     phase === 'dealing' || phase === 'player-turn' || phase === 'dealer-turn';
@@ -58,8 +59,6 @@ export function StatsPanel({ stats, roundId, phase, onReset }: StatsPanelProps) 
 
   const roundLabel =
     phase === 'ready' || roundId === 0 ? '等待开局' : `第 ${String(roundId).padStart(2, '0')} 局`;
-  const clearedRoundLabel =
-    roundId > 0 ? `「第 ${String(roundId).padStart(2, '0')} 局」` : '「局数」';
 
   return (
     <>
@@ -109,7 +108,7 @@ export function StatsPanel({ stats, roundId, phase, onReset }: StatsPanelProps) 
         <p className="stats-panel__note">连胜会被失败或和局打断。战绩保存在本机浏览器。</p>
 
         <div className="stats-panel__footer">
-          <span>共 {rounds} 局</span>
+          <span>共 {displayedRounds} 局</span>
           <button
             ref={resetButtonRef}
             type="button"
@@ -144,9 +143,7 @@ export function StatsPanel({ stats, roundId, phase, onReset }: StatsPanelProps) 
         <div className="confirm-dialog__body">
           <span className="panel-eyebrow">CLEAR LEDGER</span>
           <h2 id="confirm-reset-title">清空全部战绩？</h2>
-          <p id="confirm-reset-note">
-            胜、负、和、连胜与{clearedRoundLabel}都会归零，此操作无法撤销。
-          </p>
+          <p id="confirm-reset-note">清空后，本机保存的战绩会全部归零，且无法恢复。</p>
           <div className="confirm-dialog__actions">
             <button
               ref={cancelButtonRef}
@@ -161,7 +158,7 @@ export function StatsPanel({ stats, roundId, phase, onReset }: StatsPanelProps) 
               className="confirm-dialog__danger"
               onClick={confirmReset}
             >
-              确认清空
+              清空
             </button>
           </div>
         </div>
